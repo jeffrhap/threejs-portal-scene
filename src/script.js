@@ -1,4 +1,5 @@
 import "./style.css";
+import { gsap } from "gsap";
 import * as dat from "lil-gui";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -18,6 +19,8 @@ const debugObject = {};
 const gui = new dat.GUI({
   width: 400,
 });
+
+gui.close();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -93,6 +96,19 @@ gltfLoader.load("portal.glb", (gltf) => {
   poleLightBMesh.material = poleLightMaterial;
 
   scene.add(gltf.scene);
+
+  const portalScene = scene.children.find((item) => item.name === "Scene");
+
+  document.addEventListener("mousemove", (e) => {
+    let xPos = e.pageX / window.innerWidth - 0.5;
+    let yPos = e.pageY / window.innerHeight - 0.5;
+
+    gsap.to(portalScene.rotation, {
+      x: -yPos,
+      y: -xPos,
+      ease: "Power1.easeOut",
+    });
+  });
 });
 
 /**
@@ -172,14 +188,14 @@ scene.add(camera);
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-// controls.enablePan = false;
-controls.maxAzimuthAngle = Math.PI / 2 + 0.25;
-controls.minAzimuthAngle = -Math.PI / 2 - 0.25;
-controls.maxPolarAngle = Math.PI / 2 - 0.25;
+controls.enabled = false;
+// controls.enableDamping = true;
+// controls.maxAzimuthAngle = Math.PI / 2 + 0.25;
+// controls.minAzimuthAngle = -Math.PI / 2 - 0.25;
+// controls.maxPolarAngle = Math.PI / 2 - 0.25;
 
-const minPan = new THREE.Vector3(-0.8, -0.8, -0.8);
-const maxPan = new THREE.Vector3(0.8, 0.8, 0.8);
+// const minPan = new THREE.Vector3(-0.8, -0.8, -0.8);
+// const maxPan = new THREE.Vector3(0.8, 0.8, 0.8);
 
 /**
  * Renderer
@@ -211,9 +227,8 @@ const tick = () => {
   portalLightMaterial.uniforms.uTime.value = elapsedTime;
 
   // Update controls
-  controls.update();
-
-  controls.target.clamp(minPan, maxPan);
+  // controls.update();
+  // controls.target.clamp(minPan, maxPan);
 
   // Render
   renderer.render(scene, camera);

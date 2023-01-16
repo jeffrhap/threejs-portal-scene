@@ -4,6 +4,7 @@ import path from 'path';
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import glslify from 'rollup-plugin-glslify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,7 +15,8 @@ export default defineConfig({
     vue(),
     VueI18nPlugin({
       include: [path.resolve(__dirname, './src/assets/data/translations/**')],
-     })
+     }),
+     glslify()
     ],
   css: {
     preprocessorOptions: {

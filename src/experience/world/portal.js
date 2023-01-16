@@ -1,14 +1,17 @@
 import * as THREE from "three";
+import gsap from "gsap";
 
 import Experience from "../experience.js";
 
-import { portalVertexShader, portalFragmentShader } from "./shaders";
+import vertexShader from "@/assets/shaders/portal/vertex.glsl";
+import fragmentShader from "@/assets/shaders/portal/fragment.glsl";
 
 export default class RubiksCube {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
+    this.time = this.experience.time;
     this.debug = this.experience.debug;
 
     if (this.debug.active) {
@@ -41,17 +44,21 @@ export default class RubiksCube {
     debugObject.portalColorStart = "#7e068e";
     debugObject.portalColorEnd = "#f4a8f5";
 
-    // this.debugFolder.addColor(debugObject, "portalColorStart").onChange(() => {
-    //   this.portalLightMaterial.uniforms.uColorStart.value.set(
-    //     debugObject.portalColorStart
-    //   );
-    // });
+    if (this.debug.active) {
+      this.debugFolder
+        .addColor(debugObject, "portalColorStart")
+        .onChange(() => {
+          this.portalLightMaterial.uniforms.uColorStart.value.set(
+            debugObject.portalColorStart
+          );
+        });
 
-    // this.debugFolder.addColor(debugObject, "portalColorEnd").onChange(() => {
-    //   this.portalLightMaterial.uniforms.uColorEnd.value.set(
-    //     debugObject.portalColorEnd
-    //   );
-    // });
+      this.debugFolder.addColor(debugObject, "portalColorEnd").onChange(() => {
+        this.portalLightMaterial.uniforms.uColorEnd.value.set(
+          debugObject.portalColorEnd
+        );
+      });
+    }
 
     // Portal light material
     this.portalLightMaterial = new THREE.ShaderMaterial({
@@ -60,8 +67,8 @@ export default class RubiksCube {
         uColorStart: { value: new THREE.Color(debugObject.portalColorStart) },
         uColorEnd: { value: new THREE.Color(debugObject.portalColorEnd) },
       },
-      vertexShader: portalVertexShader,
-      fragmentShader: portalFragmentShader,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
     });
   }
 
@@ -87,5 +94,24 @@ export default class RubiksCube {
     poleLightBMesh.material = this.poleLightMaterial;
 
     this.scene.add(this.model);
+
+    const portalScene = this.scene.children.find(
+      (item) => item.name === "Scene"
+    );
+
+    document.addEventListener("mousemove", (e) => {
+      let xPos = e.pageX / window.innerWidth - 0.5;
+      let yPos = e.pageY / window.innerHeight - 0.5;
+
+      gsap.to(portalScene.rotation, {
+        x: -yPos / 8,
+        y: -xPos / 8,
+        ease: "Power1.easeOut",
+      });
+    });
+  }
+
+  update() {
+    this.portalLightMaterial.uniforms.uTime.value = this.time.elapsed / 1000;
   }
 }

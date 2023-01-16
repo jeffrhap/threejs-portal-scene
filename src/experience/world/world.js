@@ -1,7 +1,8 @@
 import Experience from "../experience.js";
 import Loader from "../utils/loader.js";
 import Environment from "./environment.js";
-import Portal from "./portal.js"
+import Portal from "./portal.js";
+import Fireflies from "./fireflies.js";
 
 import { gsap } from "gsap";
 
@@ -26,9 +27,18 @@ export default class World {
     this.resources.on("ready", () => {
       // Setup
       this.portal = new Portal();
+      this.fireflies = new Fireflies();
       this.environment = new Environment();
     });
   }
 
-  update() {}
+  update() {
+    if (this.portal) {
+      this.portal.update();
+    }
+
+    if (this.fireflies) {
+      this.fireflies.update();
+    }
+  }
 }

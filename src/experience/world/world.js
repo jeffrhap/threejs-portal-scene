@@ -1,6 +1,6 @@
 import Experience from "../experience.js";
 import Loader from "../utils/loader.js";
-import Environment from "./environment.js";
+
 import Portal from "./portal.js";
 import Fireflies from "./fireflies.js";
 
@@ -28,7 +28,6 @@ export default class World {
       // Setup
       this.portal = new Portal();
       this.fireflies = new Fireflies();
-      this.environment = new Environment();
     });
   }
 

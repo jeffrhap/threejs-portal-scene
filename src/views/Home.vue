@@ -3,8 +3,8 @@
     <ThreeScene />
     <div class="full-width">
       <img class="logo" alt="Vue logo" src="@/assets/images/logos/logo.png" />
-      <h1>Vue3 & TS Boilerplate</h1>
-      <h2>Engagement</h2>
+      <h1>Three.js Portal Scene</h1>
+      <h2>Tech Demo</h2>
     </div>
   </div>
 </template>
